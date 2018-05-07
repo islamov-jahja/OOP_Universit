@@ -30,6 +30,8 @@ public:
 	CMyString const CMyString::operator +(CMyString const& other) const;
 	bool CMyString::operator >(CMyString const& other) const;
 	bool CMyString::operator <(CMyString const& other) const;
+	bool CMyString::operator >=(CMyString const& other) const;
+	bool CMyString::operator <=(CMyString const& other) const;
 	friend istream& operator >>(istream& stream, CMyString& other);
 	~CMyString();
 private:

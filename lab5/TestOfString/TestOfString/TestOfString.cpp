@@ -256,5 +256,27 @@ TEST_CASE("operator >> for CMyString")
 	myStream >> line;
 	CHECK(line == "hello world");
 	cout << "test passed successfully" << endl;
+}
+
+TEST_CASE("operator >=")
+{
+	cout << "test : perator >=" << endl;
+	CMyString line("hello");
+	CMyString line2("hello");
+	CHECK(line >= line2);
+	line = "hellop";
+	CHECK(line >= line2);
+	cout << "test passed successfully" << endl;
+}
+
+TEST_CASE("operator <=")
+{
+	cout << "test : perator <=" << endl;
+	CMyString line("hello");
+	CMyString line2("hello");
+	CHECK(line2 <= line);
+	line = "hellop";
+	CHECK(line2 <= line);
+	cout << "test passed successfully" << endl;
 	system("pause");
 }

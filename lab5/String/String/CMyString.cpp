@@ -160,10 +160,10 @@ bool CMyString::operator>(CMyString const & other) const
 		if (m_pChars[i] > other.m_pChars[i])
 			return true;
 
-	if (m_length < other.m_length)
-		return false;
-
-	return true;
+	if (m_length > other.m_length)
+		return true;
+	else
+		return false;;
 }
 
 bool CMyString::operator<(CMyString const & other) const
@@ -174,8 +174,24 @@ bool CMyString::operator<(CMyString const & other) const
 
 	if (m_length < other.m_length)
 		return true;
+	else
+    	return false;
+}
 
-	return false;
+bool CMyString::operator>=(CMyString const & other) const
+{
+	if (!operator<(other))
+		return true;
+	else
+		return false;
+}
+
+bool CMyString::operator<=(CMyString const & other) const
+{
+	if (!operator>(other))
+		return true;
+	else
+		return false;
 }
 
 CMyString::CMyString(CMyString && other)
