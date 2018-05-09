@@ -15,7 +15,7 @@ size_t CMyString::GetLength() const
 
 const char * CMyString::GetStringData() const
 {
-	return m_pChars.get();
+    return m_pChars.get();
 }
 
 CMyString::CMyString(const char * pString)
