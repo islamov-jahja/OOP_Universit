@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include "CUrlParsingError.h"
+#include <algorithm>
 using namespace std;
 enum Protocol
 {
@@ -20,12 +22,14 @@ public:
 	unsigned short GetPort()const;
 	~CHttpUrl();
 private:
-	string m_url;
-	string m_domain;
-	string m_document;
-	Protocol m_protocol;
+	string m_url = "";
+	string m_domain = "";
+	string m_document = "";
+	Protocol m_protocol = HTTP;
 	unsigned short m_port;
-	bool IsDomain(const string& domain)const;
-	bool IsDocument(const string& document)const;
+	void ParseUrl(string const& url);
+	bool IsDomain(string const& domain);
+	bool IsDocument(string const& document);
+	bool IsAJourney(string const nameOfFile);
 };
 
