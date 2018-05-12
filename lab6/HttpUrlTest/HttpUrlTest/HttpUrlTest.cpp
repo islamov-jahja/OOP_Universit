@@ -178,4 +178,5 @@ TEST_CASE("checking for an exception in case of port mismatch and protocol")
 	CHECK(error == "port and protocol mismatch");
 	cout << "the exceptions are correct" << endl << endl << endl;
 	system("pause");
+	system("pause");
 }
