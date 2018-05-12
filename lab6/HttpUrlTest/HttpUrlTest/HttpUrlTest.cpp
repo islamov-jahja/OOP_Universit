@@ -7,33 +7,33 @@
 
 TEST_CASE("Verifying that the error class returns the correct message")
 {
-	cout << "Verifying that the error class returns the correct message" << endl;
-	CUrlParsingError myError("Is error");
+	cout << "--Verifying that the error class returns the correct message" << endl << endl;
+	CUrlParsingError myError("Class sucessfuly checked");
 	cout << myError.GetMessage() << endl;
-	cout << "the test was successful" << endl;
+	cout << endl << endl;
 }
 
 TEST_CASE("constructor only with Url")
 {
-	cout << "test : constructor only with Url" << endl;
+	cout << "--test : constructor only with Url" << endl << endl;
 	CHttpUrl myUrl("http://www.google.com/hello/world.txt");
-	cout << "the test was successful" << endl;
+	cout << "class created successfully" << endl << endl << endl;
 }
 
 TEST_CASE("Verify that the protocol is properly checked")
 {
-	cout << "test : Verify that the protocol is properly checked";
+	cout << "--test : Verify that the protocol is properly checked" << endl << endl;
 	CHttpUrl myUrl("http://www.google.com/hello/world.txt");
 	CHECK(myUrl.GetProtocol() == HTTP);
 	CHttpUrl myUrl2("https://www.google.com/hello/world.txt");
 	CHECK(myUrl2.GetProtocol() == HTTPS);
-	cout << "the test was successful" << endl;
+	cout << "protocols are filled successfully" << endl << endl << endl;
 }
 
 TEST_CASE("Verifying that when you enter an invalid protocol, the class throws an exception")
 {
 	string error = "";
-	cout << "Verifying that when you enter an invalid protocol, the class throws an exception" << endl;
+	cout << "--Verifying that when you enter an invalid protocol, the class throws an exception" << endl;
 
 	try
 	{
@@ -45,30 +45,30 @@ TEST_CASE("Verifying that when you enter an invalid protocol, the class throws a
 	}
 
 	CHECK(error == "incorrect protocol");
-	cout << "the test was successful" << endl;
+	cout << "the correct error is thrown" << endl << endl << endl;
 }
 
 TEST_CASE("checking that the port is correctly written when typing url")
 {
-	cout << "checking that the port is correctly written when typing url" << endl;
+	cout << "--checking that the port is correctly written when typing url" << endl << endl;
 	CHttpUrl myUrl("http://www.google.com/hello/world.txt");
 	CHECK(myUrl.GetPort() == 80);
 	CHttpUrl myUrl2("https://www.google.com/hello/world.txt");
 	CHECK(myUrl2.GetPort() == 443);
-	cout << "the test was successful" << endl;
+	cout << "port matches the protocol requirements" << endl << endl << endl;
 }
 
 TEST_CASE("Checking that the correct domain is accepted")
 {
-	cout << "test : Checking that the correct domain is accepted" << endl;
+	cout << "--test : Checking that the correct domain is accepted" << endl << endl;
 	CHttpUrl myUrl("https://www.google.com/hello/world.txt");
 	CHECK(myUrl.GetDomain() == "www.google.com");
-	cout << "the test was successful" << endl;
+	cout << "domain is correct" << endl << endl << endl;
 }
 
 TEST_CASE("check that when you enter an incorrect document name, an exception will be thrown")
 {
-	cout << "test: check that when you enter an incorrect document name, an exception will be thrown" << endl;
+	cout << "--test: check that when you enter an incorrect document name, an exception will be thrown" << endl << endl;
 	string error = "";
 	
 	try
@@ -81,22 +81,22 @@ TEST_CASE("check that when you enter an incorrect document name, an exception wi
 	}
 
 	CHECK(error == "incorrect domain");
-	cout << "the test was successful" << endl;
+	cout << "the correct error is thrown" << endl << endl << endl;
 }
 
 TEST_CASE("Verifying that the document is correctly written when you type url")
 {
-	cout << "test : Verifying that the document is correctly written when you type url" << endl;
+	cout << "--test : Verifying that the document is correctly written when you type url" << endl << endl;
 	CHttpUrl myUrl("https://www.google.com/hello/world.txt");
 	CHECK(myUrl.GetDocument() == "/hello/world.txt");
 	CHttpUrl myUrl2("https://www.google.com");
 	CHECK(myUrl2.GetDocument() == "");
-	cout << "the test was successful" << endl;
+	cout << "document is correctly" << endl << endl << endl;
 }
 
 TEST_CASE("Exception checking for incorrect document data")
 {
-	cout << "Exception checking for incorrect document data" << endl;
+	cout << "Exception checking for incorrect document data" << endl << endl;
 	string error;
 
 	try
@@ -121,37 +121,37 @@ TEST_CASE("Exception checking for incorrect document data")
 	}
 
 	CHECK(error == "incroccect document");
-	cout << "the test was successful" << endl;
+	cout << "the correct exceptions are thrown" << endl << endl << endl;
 }
 
 TEST_CASE("check the constructor, to which all the data being parsed are sent, except for the port")
 {
-	cout << "check the constructor, to which all the data being parsed are sent, except for the port" << endl;
+	cout << "--check the constructor, to which all the data being parsed are sent, except for the port" << endl << endl;
 	CHttpUrl myUrl2("www.google.com", "/hello/world.txt", HTTP);
 	CHECK(myUrl2.GetDocument() == "/hello/world.txt");
 	CHECK(myUrl2.GetDomain() == "www.google.com");
 	CHECK(myUrl2.GetPort() == 80);
 	CHECK(myUrl2.GetProtocol() == HTTP);
 	CHECK(myUrl2.GetURL() == "http://www.google.com/hello/world.txt");
-	cout << "the test was successful" << endl;
+	cout << "class was created with successful data" << endl << endl << endl;
 }
 
-TEST_CASE("check the constructor, to which all the data being parsed are sent")
+TEST_CASE("--check the constructor, to which all the data being parsed are sent")
 {
-	cout << "check the constructor, to which all the data being parsed are sent" << endl;
+	cout << "--check the constructor, to which all the data being parsed are sent" << endl << endl;
 	CHttpUrl myUrl2("www.google.com", "/hello/world.txt", HTTP, 80);
 	CHECK(myUrl2.GetDocument() == "/hello/world.txt");
 	CHECK(myUrl2.GetDomain() == "www.google.com");
 	CHECK(myUrl2.GetPort() == 80);
 	CHECK(myUrl2.GetProtocol() == HTTP);
 	CHECK(myUrl2.GetURL() == "http://www.google.com/hello/world.txt");
-	cout << "the test was successful" << endl;
+	cout << "class was created with successful data" << endl << endl << endl;
 }
 
 
 TEST_CASE("checking for an exception in case of port mismatch and protocol")
 {
-	cout << "test : checking for an exception in case of port mismatch and protocol" << endl;
+	cout << "--test : checking for an exception in case of port mismatch and protocol" << endl << endl;
 	string error = "";
 
 	try
@@ -176,5 +176,6 @@ TEST_CASE("checking for an exception in case of port mismatch and protocol")
 	}
 
 	CHECK(error == "port and protocol mismatch");
-	cout << "the test was successful" << endl;
+	cout << "the exceptions are correct" << endl << endl << endl;
+	system("pause");
 }
