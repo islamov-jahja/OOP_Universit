@@ -279,4 +279,5 @@ TEST_CASE("operator <=")
 	CHECK(line2 <= line);
 	cout << "operator <= works" << endl << endl;
 	system("pause");
+	system("pause");
 }
