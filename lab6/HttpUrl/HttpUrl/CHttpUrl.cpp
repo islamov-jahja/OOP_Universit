@@ -89,6 +89,7 @@ void CHttpUrl::ParseUrl(const string & url)
 
 	urlCpy = urlCpy.substr(position + 2, urlCpy.length());
 	position = urlCpy.find('/');
+
 	if (position != -1)
 		urlSubString = urlCpy.substr(0, position);
 	else
@@ -99,7 +100,19 @@ void CHttpUrl::ParseUrl(const string & url)
 	}
 
 	if (IsDomain(urlSubString))
-		m_domain = urlSubString;
+	{
+		if (DomainWithPort(urlSubString))
+		{
+			PortCheck(urlSubString);
+			ChooseDomain(urlSubString);
+			ChooseUrl(url);
+		}
+		else
+		{
+			m_url = url;
+			m_domain = urlSubString;
+		}
+	}
 	else
 		throw CUrlParsingError("incorrect domain");
 
@@ -108,10 +121,7 @@ void CHttpUrl::ParseUrl(const string & url)
 		urlCpy = urlCpy.substr(position, urlCpy.length());
 
 		if (IsDocument(urlCpy))
-		{
 			m_document = urlCpy;
-			m_url = url;
-		}
 		else
 			throw CUrlParsingError("incorrect document");
 	}
@@ -122,10 +132,8 @@ bool CHttpUrl::IsDomain(string const & domain)
 	if (domain == "")
 		return false;
 
-	for (size_t i = 0; i < domain.length(); i++)
-		if (i != (domain.length() - 1))
-			if (domain[i] == '.' && domain[i+1] == '.')
-				return false;
+	if (IsEllipsis(domain) || WithIncorrectSymb(domain))
+		return false;
 
 	return true;
 }
@@ -147,13 +155,13 @@ bool CHttpUrl::IsDocument(string const & document)
 		{
 			nameOfFile = cpyDocument.substr(0, pos);
 			cpyDocument = cpyDocument.substr(pos + 1, cpyDocument.length());
-			if (IsAJourney(nameOfFile) || nameOfFile == "")
+			if (WithIncorrectSymb(nameOfFile) || nameOfFile == "")
 				throw CUrlParsingError("incroccect document");
 		}
 		else
 		{
 			nameOfFile = cpyDocument;
-			if (IsAJourney(nameOfFile) || nameOfFile == "")
+			if (WithIncorrectSymb(nameOfFile) || nameOfFile == "")
 				throw CUrlParsingError("incroccect document");
 			break;
 		}
@@ -162,13 +170,69 @@ bool CHttpUrl::IsDocument(string const & document)
 	return true;
 }
 
-bool CHttpUrl::IsAJourney(string const nameOfFile)
+bool CHttpUrl::WithIncorrectSymb(string const nameOfFile)
 {
-	string imprintedSymbols = "\\/*?\"<>|";
+	string imprintedSymbols = "\\/*?\"<>|^&*%$#@!+=~`";
 	for (size_t i = 0; i < nameOfFile.length(); i++)
 		for (size_t j = 0; j < imprintedSymbols.length(); j++)
 			if (nameOfFile[i] == imprintedSymbols[j])
 				return true;
 
 	return false;
+}
+
+bool CHttpUrl::IsEllipsis(string const & line)
+{
+	for (size_t i = 0; i < line.length(); i++)
+		if (i != (line.length() - 1))
+			if (line[i] == '.' && line[i + 1] == '.')
+				return true;
+
+	return false;
+}
+
+bool CHttpUrl::DomainWithPort(string const & domain)
+{
+	int count = 0;
+	for (size_t i = 0; i < domain.length(); i++)
+		if (domain[i] == ':')
+			count++;
+
+	if (count == 1)
+		return true;
+	else if (count > 1)
+		throw CUrlParsingError("incorrect domain");
+	else
+		return false;
+}
+
+void CHttpUrl::PortCheck(string const & domain)
+{
+	int pos = domain.find(':');
+	string myPort = "";
+	myPort += to_string(m_port) + '/';
+
+	string copyDomain = domain + '/';
+	string port = copyDomain.substr(pos+1, 3);
+
+	if (port != myPort)
+	{
+		port = copyDomain.substr(pos + 1, 4);
+
+		if (port != myPort)
+			throw CUrlParsingError("incorrect port");
+	}
+}
+
+void CHttpUrl::ChooseUrl(string const & url)
+{
+	int pos = url.find(to_string(m_port));
+	string port = to_string(m_port);
+	m_url = url.substr(0, pos-1) + url.substr(pos + port.length());
+}
+
+void CHttpUrl::ChooseDomain(string const & domain)
+{
+	int pos = domain.find(':');
+	m_domain = domain.substr(0, pos);
 }

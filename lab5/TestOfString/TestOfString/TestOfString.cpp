@@ -44,14 +44,6 @@ TEST_CASE("A constructor initializing a string with data from a character array 
 	
 	CHECK(line == "hello");
 	CHECK(*(input4.GetStringData() + input4.GetLength()) == '\0');
-	string line2;
-	CMyString input5("hello world", 100);
-	for (size_t i = 0; i < input5.GetLength(); i++)
-		line2.push_back(*(input5.GetStringData() + i));
-
-	CHECK(line2 == "hello world");
-	CHECK(*(input5.GetStringData() + input5.GetLength()) == '\0');
-	cout << "The returned length and content of the string are correct" << endl << endl;
 }
 
 TEST_CASE("copy constructor")
@@ -171,7 +163,7 @@ TEST_CASE("operator [] for write")
 {
 	cout << "--test : operator [] for write" << endl;
 	CMyString line1("hello world");
-	line1[-5] = '4';
+	line1[0] = '4';
 	CHECK(line1[0] == '4');
 	cout << "operator [] for write works" << endl << endl;
 }
@@ -278,5 +270,28 @@ TEST_CASE("operator <=")
 	line = "hellop";
 	CHECK(line2 <= line);
 	cout << "operator <= works" << endl << endl;
+}
+
+TEST_CASE("test \0")
+{
+	cout << "--test : \0" << endl;
+	CMyString str("a\0\0b", 4);
+	CHECK(str.GetLength() == 4);
+	std::ostringstream oStream;
+
+	for (size_t i = 0; i < str.GetLength(); ++i)
+	{
+		if (str[i] == '\0')
+		{
+			oStream << "\\0";
+		}
+		else
+		{
+			oStream << str[i];
+		}
+	}
+	REQUIRE(oStream.str() == "a\\0\\0b");
+	cout << "----string with double \\0 in middle input: a\\0\\0b\n";
+	cout << "----string with double \\0 in middle result: "<< oStream.str() << '\n';
 	system("pause");
 }

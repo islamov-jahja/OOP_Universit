@@ -31,20 +31,10 @@ CMyString::CMyString(const char * pString, size_t length)
 
 	if (length != 0)
 	{
-		if (lengthOfArr >= length)
-		{
-			m_pChars = make_unique<char[]>(length+1);
-			memcpy(m_pChars.get(), pString, length);
-			m_length = length;
-			m_pChars[length] = '\0';
-		}
-		else
-		{
-			m_pChars = make_unique<char[]>(lengthOfArr + 1);
-			memcpy(m_pChars.get(), pString, lengthOfArr);
-			m_length = lengthOfArr;
-			m_pChars[lengthOfArr] = '\0';
-		}
+		m_pChars = make_unique<char[]>(length+1);
+		memcpy(m_pChars.get(), pString, length);
+		m_length = length;
+		m_pChars[length] = '\0';
 	}
 	else
 		m_pChars = nullptr;

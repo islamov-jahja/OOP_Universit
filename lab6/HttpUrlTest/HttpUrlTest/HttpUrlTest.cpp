@@ -5,6 +5,7 @@
 #include "../../HttpUrl/HttpUrl/CHttpUrl.h"
 #include "../../HttpUrl/HttpUrl/CUrlParsingError.h"
 
+
 TEST_CASE("Verifying that the error class returns the correct message")
 {
 	cout << "--Verifying that the error class returns the correct message" << endl << endl;
@@ -177,5 +178,44 @@ TEST_CASE("checking for an exception in case of port mismatch and protocol")
 
 	CHECK(error == "port and protocol mismatch");
 	cout << "the exceptions are correct" << endl << endl << endl;
+}
+
+TEST_CASE("check that when specifying the port in the URL it is correct")
+{
+	cout << "--test : check that when specifying the port in the URL it is correct" << endl << endl;
+	
+	CHttpUrl myUrl("https://www.google.com:443/hello/world.txt");
+	CHECK(myUrl.GetPort() == 443);
+	
+	cout << "the test passed correctly" << endl << endl << endl;
+}
+
+TEST_CASE("check that when specifying the wrong port in the URL, the correct exception will be thrown out")
+{
+	cout << "--test : check that when specifying the wrong port in the URL, the correct exception will be thrown out" << endl << endl;
+	
+	string error;
+
+	try
+	{
+		CHttpUrl myUrl("https://www.google.com:80/hello/world.txt");
+	}
+	catch (const CUrlParsingError& myError)
+	{
+		error = myError.GetMessage();
+	}
+
+	CHECK(error == "incorrect port");
+	cout << "the exception are correct" << endl << endl << endl;
+}
+
+TEST_CASE("checking that when specifying a port in the URL, the output is done without a port")
+{
+	cout << "--test : checking that when specifying a port in the URL, the output is done without a port" << endl;
+
+	CHttpUrl myUrl("https://www.google.com:443/hello/world.txt");
+	CHECK(myUrl.GetURL() == "https://www.google.com/hello/world.txt");
+
+	cout << "the test passed correctly" << endl << endl << endl;
 	system("pause");
 }

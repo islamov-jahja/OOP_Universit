@@ -31,6 +31,7 @@ int main()
 
 void PrintUrl(const CHttpUrl& url)
 {
+	cout << endl;
 	int port = url.GetPort();
 	cout << "Port: " << port << endl;
 	if (url.GetProtocol() == HTTP)

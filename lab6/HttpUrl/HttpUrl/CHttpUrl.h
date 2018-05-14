@@ -30,6 +30,11 @@ private:
 	void ParseUrl(string const& url);
 	bool IsDomain(string const& domain);
 	bool IsDocument(string const& document);
-	bool IsAJourney(string const nameOfFile);
+	bool WithIncorrectSymb(string const nameOfFile);
+	bool IsEllipsis(string const& line);
+	bool DomainWithPort(string const& domain);
+	void CHttpUrl::PortCheck(string const & domain);
+	void ChooseUrl(string const& url);
+	void ChooseDomain(string const& domain);
 };
 
