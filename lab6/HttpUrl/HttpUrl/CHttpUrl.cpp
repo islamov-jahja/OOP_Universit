@@ -141,7 +141,7 @@ bool CHttpUrl::IsDomain(string const & domain)
 bool CHttpUrl::IsDocument(string const & document)
 {
 	if (document[0] != '/')
-		throw CUrlParsingError("incroccect document");
+		throw CUrlParsingError("inñorrect document");
 
 	string nameOfFile;
 	string cpyDocument = document.substr(1, document.length());
