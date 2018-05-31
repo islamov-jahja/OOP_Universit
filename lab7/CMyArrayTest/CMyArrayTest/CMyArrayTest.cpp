@@ -249,7 +249,7 @@ TEST_CASE()
 
 TEST_CASE()
 {
-	cout << "resize the array" << endl;
+	cout << "--resize the array" << endl;
 	CMyArray<int> arr{ 2, 4, 1 };
 	arr.Resize(4);
 	CHECK(arr.Size() == 4);
@@ -258,6 +258,16 @@ TEST_CASE()
 	CHECK(arr[2] == 1);
 	CHECK(arr[3] == 0);
 	cout << "the size of the array has changed correctly" << endl << endl;
+}
+
+TEST_CASE()
+{
+	cout << "--array check on semicolons" << endl;
+	CMyArray<float> numbers;
+	numbers.PushToEnd(3.4);
+	CHECK(numbers.Size() == 1);
+	CHECK(numbers[0] == 3.4f);
+	cout << "array responds correctly" << endl << endl;
 }
 
 TEST_CASE()
