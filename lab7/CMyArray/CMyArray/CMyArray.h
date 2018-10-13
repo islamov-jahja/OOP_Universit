@@ -54,7 +54,6 @@ inline void CMyArray<Type>::PushToEnd(const Type & value)
 
 	if (!tmpArr)
 	{
-		delete[] m_begin;
 		throw std::bad_alloc();
 	}
 
@@ -93,14 +92,16 @@ template<typename Type>
 inline CMyArray<Type>& CMyArray<Type>::operator=(const CMyArray & other)
 {
 	Clear();
-	m_begin = new Type[other.Size()];
+	Type * tmpArr = new Type[other.Size()];
 
-	if (!m_begin)
+	if (!tmpArr)
 		throw std::bad_alloc();
 
 	if (std::addressof(other) != this)
 		for (size_t i = 0; i < other.Size(); i++)
-			*(m_begin + i) = other[i];
+			*(tmpArr + i) = other[i];
+
+	m_begin = tmpArr;
 
 	m_end = m_begin + (other.Size() - 1);
 	m_length = other.Size();

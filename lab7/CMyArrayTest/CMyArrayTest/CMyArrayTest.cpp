@@ -74,22 +74,6 @@ TEST_CASE()
 	cout << "the test was successful" << endl << endl;
 }
 
-TEST_CASE("bracelet constructor test")
-{
-	cout << "--bracelet constructor test" << endl;
-	CMyArray<int> myArr{4, 2, 1};
-	CHECK(myArr.Size() == 3);
-	CHECK(myArr[2] == 1);
-	CHECK(myArr[0] == 4);
-	CHECK(myArr[1] == 2);
-
-	CMyArray<string> myArr3{ "chees", "friend" };
-
-	CHECK(myArr3[0] == "chees");
-
-	cout << "the constructor works correctly" << endl << endl;
-}
-
 TEST_CASE("Check ++ and -- reverse iterator")
 {
 	cout << "--Check ++ and -- reverse iterator" << endl;
@@ -103,6 +87,26 @@ TEST_CASE("Check ++ and -- reverse iterator")
 	cout << "the test was successful" << endl << endl;
 }
 
+TEST_CASE("bracelet constructor test")
+{
+	cout << "--bracelet constructor test" << endl;
+	CMyArray<int> myArr{4, 2, 1};
+	CHECK(myArr.Size() == 3);
+	CHECK(myArr[2] == 1);
+	CHECK(myArr[0] == 4);
+	CHECK(myArr[1] == 2);
+
+	CMyArray<float> numbers2{ 1.2f, 2.4f, 5.5f };
+	CHECK(numbers2.Size() == 3);
+	CHECK(numbers2[1] == 2.4f);
+
+	CMyArray<string> myArr3{ "chees", "friend" };
+	CHECK(myArr3[0] == "chees");
+	CHECK(myArr3.Size() == 2);
+
+	cout << "the constructor works correctly" << endl << endl;
+}
+
 TEST_CASE("checking the constructor with its array")
 {
 	cout << "--checking the constructor with its array" << endl;
@@ -113,6 +117,16 @@ TEST_CASE("checking the constructor with its array")
 	CHECK(myArr2[2] == 1);
 	CHECK(myArr2[0] == 4);
 	CHECK(myArr2[1] == 2);
+
+	CMyArray<float> numbers{ 1.2f, 2.4f };
+	CMyArray<float> numbers3(numbers);
+	CHECK(numbers3.Size() == numbers.Size());
+	CHECK(numbers3[0] == numbers[0]);
+
+	CMyArray<string> stringArr{ "hello", "world" };
+	CMyArray<string> stringArr2(stringArr);
+	CHECK(stringArr.Size() == stringArr2.Size());
+	CHECK(stringArr[0] == stringArr2[0]);
 
 	cout << "the constructor works correctly" << endl << endl;
 }
@@ -125,6 +139,19 @@ TEST_CASE("check the method to return the iterator to the beginning and end")
 	CHECK(it.GetValue() == 2);
 	it = myArr.End();
 	CHECK(it.GetValue() == 6);
+
+	CMyArray<float> numbers{ 2.4f, 5.4f, 1.2f };
+	CMyIterator<float> it2 = numbers.Begin();
+	CHECK(it2.GetValue() == 2.4f);
+	it2 = numbers.End();
+	CHECK(it2.GetValue() == 1.2f);
+
+	CMyArray<string> stringArr{ "hello", "world" };
+	CMyIterator<string> stringIt = stringArr.Begin();
+	CHECK(stringIt.GetValue() == "hello");
+	stringIt = stringArr.End();
+	CHECK(stringIt.GetValue() == "world");
+
 	cout << "method works correctly" << endl << endl;
 }
 
@@ -144,6 +171,22 @@ TEST_CASE("move constructor test")
 	it = myArr.End();
 	CHECK(it == nullptr);
 
+	CMyArray<float> floatArr{ 1.2f, 2.2f };
+	CMyArray<float> floatArr2(move(floatArr));
+	CHECK(floatArr2.Size() == 2);
+	CHECK(floatArr2[0] == 1.2f);
+	CHECK(floatArr.Size() == 0);
+	CHECK(floatArr.Begin() == nullptr);
+	CHECK(floatArr.End() == nullptr);
+
+	CMyArray<string> stringArr{ "hello", "world" };
+	CMyArray<string> stringArr2(move(stringArr));
+	CHECK(stringArr2.Size() == 2);
+	CHECK(stringArr2[0] == "hello");
+	CHECK(stringArr.Size() == 0);
+	CHECK(stringArr.Begin() == nullptr);
+	CHECK(stringArr.End() == nullptr);
+
 	cout << "the constructor works correctly" << endl << endl;
 }
 
@@ -155,6 +198,19 @@ TEST_CASE("check the method of appending to the end of the array")
 	CHECK(myArr[2] == 5);
 	CHECK(myArr[3] == 8);
 	CHECK(myArr.Size() == 4);
+
+	CMyArray<float> floatArr{ 4.1f, 3.2f, 5.4f };
+	floatArr.PushToEnd(8.2f);
+	CHECK(floatArr[2] == 5.4f);
+	CHECK(floatArr[3] == 8.2f);
+	CHECK(floatArr.Size() == 4);
+
+	CMyArray<string> stringArr{ "hello", "world", "my" };
+	stringArr.PushToEnd("friend");
+	CHECK(stringArr[2] == "my");
+	CHECK(stringArr[3] == "friend");
+	CHECK(stringArr.Size() == 4);
+
 	cout << "the method worked correctly" << endl << endl;
 }
 
@@ -184,6 +240,19 @@ TEST_CASE("check that the RBEgin method returns an iterator on the last element"
 	CHECK(it.GetValue() == 5);
 	it++;
 	CHECK(it.GetValue() == 4);
+
+	CMyArray<float> floatArr{ 1.2f, 2.3f, 4.1f, 5.4f };
+	CReverseIt<float> floatIt = floatArr.RBegin();
+	CHECK(floatIt.GetValue() == 5.4f);
+	floatIt++;
+	CHECK(floatIt.GetValue() == 4.1f);
+
+	CMyArray<string> stringArr{ "hello", "world", "my", "friend" };
+	CReverseIt<string> stringIt = stringArr.RBegin();
+	CHECK(stringIt.GetValue() == "friend");
+	stringIt++;
+	CHECK(stringIt.GetValue() == "my");
+
 	cout << "returnable iterator" << endl << endl;
 }
 
@@ -195,6 +264,19 @@ TEST_CASE("check that the REnd method returns an iterator on the last element")
 	CHECK(it.GetValue() == 1);
 	it--;
 	CHECK(it.GetValue() == 2);
+
+	CMyArray<float> floatArr{ 1.2f, 2.3f, 4.1f, 5.4f };
+	CReverseIt<float> floatIt = floatArr.REnd();
+	CHECK(floatIt.GetValue() == 1.2f);
+	floatIt--;
+	CHECK(floatIt.GetValue() == 2.3f);
+
+	CMyArray<string> stringArr{ "hello", "world", "my", "friend" };
+	CReverseIt<string> stringIt = stringArr.REnd();
+	CHECK(stringIt.GetValue() == "hello");
+	stringIt--;
+	CHECK(stringIt.GetValue() == "world");
+
 	cout << "returnable iterator" << endl << endl;
 }
 
@@ -206,6 +288,19 @@ TEST_CASE("checking the method of cleaning the array")
 	CHECK(myArr.Size() == 0);
 	CHECK(myArr.Begin() == nullptr);
 	CHECK(myArr.End() == nullptr);
+
+	CMyArray<float> floatArr{ 1.2f, 2.5f, 4.1f, 5.5f };
+	floatArr.Clear();
+	CHECK(floatArr.Size() == 0);
+	CHECK(floatArr.Begin() == nullptr);
+	CHECK(floatArr.End() == nullptr);
+
+	CMyArray<string> stringArr{ "hello", "my", "dear", "friend" };
+	stringArr.Clear();
+	CHECK(stringArr.Size() == 0);
+	CHECK(stringArr.Begin() == nullptr);
+	CHECK(stringArr.End() == nullptr);
+
 	cout << "array cleared" << endl << endl;
 }
 
@@ -217,6 +312,19 @@ TEST_CASE()
 	arr = arr2;
 	CHECK(arr[0] == 2);
 	CHECK(arr.Size() == arr2.Size());
+
+	CMyArray<float> floatArr;
+	CMyArray<float> floatArr2{ 2.1f, 4.4f, 1.1f };
+	floatArr = floatArr2;
+	CHECK(floatArr[0] == 2.1f);
+	CHECK(floatArr.Size() == floatArr2.Size());
+
+	CMyArray<string> stringArr;
+	CMyArray<string> stringArr2{ "hello", "my", "friend" };
+	stringArr = stringArr2;
+	CHECK(stringArr[0] == "hello");
+	CHECK(stringArr.Size() == stringArr2.Size());
+
 	cout << "the assignment was successful" << endl << endl;
 }
 
@@ -233,6 +341,23 @@ TEST_CASE()
 	CHECK(it == nullptr);
 	it = arr2.End();
 	CHECK(it == nullptr);
+
+	CMyArray<float> floatArr{ 1.2f, 2.2f };
+	CMyArray<float> floatArr2 = move(floatArr);
+	CHECK(floatArr2.Size() == 2);
+	CHECK(floatArr2[0] == 1.2f);
+	CHECK(floatArr.Size() == 0);
+	CHECK(floatArr.Begin() == nullptr);
+	CHECK(floatArr.End() == nullptr);
+
+	CMyArray<string> stringArr{ "hello", "world" };
+	CMyArray<string> stringArr2 = move(stringArr);
+	CHECK(stringArr2.Size() == 2);
+	CHECK(stringArr2[0] == "hello");
+	CHECK(stringArr.Size() == 0);
+	CHECK(stringArr.Begin() == nullptr);
+	CHECK(stringArr.End() == nullptr);
+
 	cout << "relocation assignment works correctly" << endl << endl;
 }
 
@@ -244,6 +369,19 @@ TEST_CASE()
 	CHECK(arr.Size() == 2);
 	CHECK(arr[0] == 2);
 	CHECK(arr[1] == 4);
+
+	CMyArray<float> floatArr{ 2.1f, 4.5f, 1.1f };
+	floatArr.Resize(2);
+	CHECK(floatArr.Size() == 2);
+	CHECK(floatArr[0] == 2.1f);
+	CHECK(floatArr[1] == 4.5f);
+
+	CMyArray<string> stringArr{ "hello", "my", "friend" };
+	stringArr.Resize(2);
+	CHECK(stringArr.Size() == 2);
+	CHECK(stringArr[0] == "hello");
+	CHECK(stringArr[1] == "my");
+
 	cout << "the size of the array has changed correctly" << endl << endl;
 }
 
@@ -257,17 +395,22 @@ TEST_CASE()
 	CHECK(arr[1] == 4);
 	CHECK(arr[2] == 1);
 	CHECK(arr[3] == 0);
-	cout << "the size of the array has changed correctly" << endl << endl;
-}
 
-TEST_CASE()
-{
-	cout << "--array check on semicolons" << endl;
-	CMyArray<float> numbers;
-	numbers.PushToEnd(3.4);
-	CHECK(numbers.Size() == 1);
-	CHECK(numbers[0] == 3.4f);
-	cout << "array responds correctly" << endl << endl;
+	CMyArray<float> floatArr{ 2.1f, 4.4f, 1.1f };
+	arr.Resize(4);
+	CHECK(arr.Size() == 4);
+	CHECK(floatArr[0] == 2.1f);
+	CHECK(floatArr[1] == 4.4f);
+	CHECK(floatArr[2] == 1.1f);
+
+	CMyArray<string> stringArr{ "hello", "my", "friend" };
+	stringArr.Resize(4);
+	CHECK(stringArr.Size() == 4);
+	CHECK(stringArr[0] == "hello");
+	CHECK(stringArr[1] == "my");
+	CHECK(stringArr[2] == "friend");
+	CHECK(stringArr[3] == "");
+	cout << "the size of the array has changed correctly" << endl << endl;
 }
 
 TEST_CASE()
