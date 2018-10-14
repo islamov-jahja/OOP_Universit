@@ -3,10 +3,15 @@
 // не часто изменяются
 //
 
+#define _SCL_SECURE_NO_WARNINGS
 #pragma once
 
 #include "targetver.h"
 
+#include <boost/graph/graphviz.hpp>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/iteration_macros.hpp>
+#include <algorithm>
 #include <stdio.h>
 #include <tchar.h>
 #include <iostream>
@@ -14,7 +19,9 @@
 #include <vector>
 #include <set>
 #include <string>
+#include <map>
 using namespace std;
+using namespace boost;
 
 
 
