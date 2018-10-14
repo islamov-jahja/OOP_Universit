@@ -10,24 +10,23 @@ struct TransitionAndOutputState
 };
 
 void ReadMili(vector<vector<TransitionAndOutputState>> & arrOfMili, ifstream & inFile, size_t countOfInputState, size_t countOfState);
-vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMili(ifstream & inFile, size_t countOfInputState, size_t countOfOuputState, size_t countOfState);
-vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMur(ifstream & inFile, size_t countOfInputState, size_t countOfOuputState, size_t countOfState);
-void PrintArr(vector<vector<TransitionAndOutputState>> arrOfMili, int is, int js);
+vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMili(ofstream & outFile, ifstream & inFile, size_t countOfInputState, size_t countOfOuputState, size_t countOfState);
+vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMur(ofstream & outFile, ifstream & inFile, size_t countOfInputState, size_t countOfOuputState, size_t countOfState);
 vector<vector<int>> GetArrFromFirstIt(vector<vector<TransitionAndOutputState>> arrOfMili, size_t countOfInputState, size_t countOfState);
-void PrintArrEqv(vector<vector<int>>  arrOfMili, int is, int js);
 void ReadMur(vector<vector<int>> & arrofMur, ifstream & inFile, size_t countOfInputState, size_t countOfState);
 void PrintGraph(vector<vector<TransitionAndOutputState>> arrOfMili, int countOfState, int countOfInputState, string fileName);
 vector<vector<int>> GetSplittingGraph(vector<vector<int>> arrFromFirstIt, vector<vector<TransitionAndOutputState>> startArr, int coutInputState, int countOfState);
 vector<vector<int>> GetSplit(vector<vector<int>> arrFromFirstIt, int countOfInputState, int countOfState);
 vector<vector<int>> GetFilledArray(vector<vector<int>> arrFromFirstIt, vector<vector<TransitionAndOutputState>> startArr, int countInputState, int countOfState);
 vector<vector<TransitionAndOutputState>> GetGraphInAnotherForm(vector<vector<int>> arrWithEquvivalents, vector<vector<TransitionAndOutputState>> arrOfMur, int countOfInputState, int countOfState, int counter);
+void PrintArr(vector<vector<TransitionAndOutputState>> arrGraph, int countIn, int countAll, ofstream & outFile);
 
 const int MUR = 1;
 const int MILI = 2;
 
 int main()
 {
-	ifstream inFile("data1Mili.txt");
+	ifstream inFile("data1Mur.txt");
 	ofstream outFile("output.txt");
 
 	size_t stateForm;
@@ -40,13 +39,11 @@ int main()
 	inFile >> countOfOutputState;
 	inFile >> countOfState;
 	if (stateForm == MILI)
-		vector<vector<TransitionAndOutputState>> ArrWithMinimizedMili = GetArrWithMinimizedMili(inFile, countOfInputState, countOfOutputState, countOfState);
+		vector<vector<TransitionAndOutputState>> ArrWithMinimizedMili = GetArrWithMinimizedMili(outFile, inFile, countOfInputState, countOfOutputState, countOfState);
 	else
-		vector<vector<TransitionAndOutputState>> ArrWithMinimizedMili = GetArrWithMinimizedMur(inFile, countOfInputState, countOfOutputState, countOfState);
-
-
-	system("pause");
-    return 0;
+		vector<vector<TransitionAndOutputState>> ArrWithMinimizedMili = GetArrWithMinimizedMur(outFile, inFile, countOfInputState, countOfOutputState, countOfState);
+   
+	return 0;
 }
 
 void ReadMur(vector<vector<TransitionAndOutputState>> & arrOfMur, ifstream & inFile, size_t countOfInputState, size_t countOfState)
@@ -75,7 +72,7 @@ void ReadMili(vector<vector<TransitionAndOutputState>> & arrOfMili, ifstream & i
 		}
 }
 
-vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMili(ifstream & inFile, size_t countOfInputState, size_t countOfOuputState, size_t countOfState)
+vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMili(ofstream & outFile, ifstream & inFile, size_t countOfInputState, size_t countOfOuputState, size_t countOfState)
 {
 	vector<vector<TransitionAndOutputState>> arrOfMili(countOfInputState, vector<TransitionAndOutputState>(countOfState));
 
@@ -94,10 +91,11 @@ vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMili(ifstream & inFi
 
 	vector<vector<TransitionAndOutputState>> arrOfMiliForOut = GetGraphInAnotherForm(arrWithEquvivalents, arrOfMili, countOfInputState, countOfState, counter);
 	PrintGraph(arrOfMiliForOut, counter, countOfInputState, "outMili.dot");
+	PrintArr(arrOfMili, countOfInputState, countOfState, outFile);
 	return arrOfMiliForOut;
 }
 
-vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMur(ifstream & inFile, size_t countOfInputState, size_t countOfOuputState, size_t countOfState)
+vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMur(ofstream & outFile ,ifstream & inFile, size_t countOfInputState, size_t countOfOuputState, size_t countOfState)
 {
 	vector<vector<TransitionAndOutputState>> arrOfMur(countOfInputState, vector<TransitionAndOutputState>(countOfState));
 	ReadMur(arrOfMur, inFile, countOfInputState, countOfState);
@@ -115,6 +113,7 @@ vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMur(ifstream & inFil
 
 	vector<vector<TransitionAndOutputState>> arrOfMurForOut = GetGraphInAnotherForm(arrWithEquvivalents, arrOfMur, countOfInputState, countOfState, counter);;
 	PrintGraph(arrOfMurForOut, counter, countOfInputState, "outMur.dot");
+	PrintArr(arrOfMur, countOfInputState, countOfState, outFile);
 	return arrOfMurForOut;
 }
 
@@ -214,16 +213,12 @@ vector<vector<int>> GetSplittingGraph(vector<vector<int>> arrFromFirstIt, vector
 		if (checkArr == arrFromFirstIt)
 		{
 			arrFromFirstIt = GetFilledArray(arrFromFirstIt, startArr, countInputState, countOfState);
-			PrintArrEqv(arrFromFirstIt, countInputState+2, countOfState);
 			break;
 		}
 
 		checkArr = arrFromFirstIt;
 		arrFromFirstIt = GetFilledArray(arrFromFirstIt, startArr, countInputState, countOfState);
-
 		arrFromFirstIt = GetSplit(arrFromFirstIt, countInputState, countOfState);
-		PrintArrEqv(arrFromFirstIt, countInputState + 2, countOfState);
-		cout << endl;
 	}
 
 	return arrFromFirstIt;
@@ -250,78 +245,40 @@ vector<vector<int>> GetFilledArray(vector<vector<int>> arrFromFirstIt, vector<ve
 
 vector<vector<int>> GetSplit(vector<vector<int>> arrFromFirstIt, int countOfInputState, int countOfState)
 {
-	int counter = 0;
 	vector<vector<int>> arrForOut(countOfInputState + 2, vector<int>(countOfState));
-	set<int> setWithStates;
-	bool isEquivalent = true;
-	int countEquivalent = 0;
-	int countForCheck = 0;
 	set<int> setForCheck;
+	set<int> mySet;
+	bool isCheck = true;
+	int countEqvivalent = 0;
+	int counter = 0;
 
 	for (size_t i = 0; i < countOfState; i++)
 	{
-		setForCheck = setWithStates;
-		countForCheck = setWithStates.size();
-
-		for (size_t j = i; j < countOfState; j++)
+		mySet = setForCheck;
+		for (size_t j = 0; j < countOfState; j++)
 		{
 			for (size_t k = 0; k < countOfInputState; k++)
-				if (!(arrFromFirstIt[k+2][i] == arrFromFirstIt[k+2][j] && setWithStates.find(j) == setWithStates.end() && arrFromFirstIt[0][i] == arrFromFirstIt[0][j]))
-				{
-					isEquivalent = false;
-					break;
-				}
-
-			if (isEquivalent)
-				setWithStates.insert(j);
-			else
-				isEquivalent = true;
-		}
-
-		if (countForCheck != setWithStates.size())
-		{
-			bool isCheck = false;
-
-			for (auto x : setWithStates)
 			{
-				isCheck = false;
-
-				for (auto y : setForCheck)
-					if (x == y)
-						isCheck = true;
-
-				if (!isCheck)
-				{
-					arrForOut[0][counter] = countEquivalent;
-					arrForOut[1][counter] = x;
-					counter++;
-				}
+				if (arrFromFirstIt[k+2][i] != arrFromFirstIt[k+2][j] || setForCheck.find(j) != setForCheck.end() || arrFromFirstIt[0][i] != arrFromFirstIt[0][j])
+					isCheck = false;
 			}
-			countEquivalent++;
+
+			if (isCheck)
+			{
+				setForCheck.insert(j);
+				arrForOut[0][counter] = countEqvivalent;
+				arrForOut[1][counter] = arrFromFirstIt[1][j];
+				counter++;
+			}
+			else
+				isCheck = true;
 		}
+
+		if (mySet.size() != setForCheck.size())
+			countEqvivalent++;
 	}
 
 	return arrForOut;
-}
-
-void PrintArr(vector<vector<TransitionAndOutputState>> arrOfMili, int is, int js)
-{
-	for (size_t i = 0; i < is; i++)
-	{
-		for (size_t j = 0; j < js; j++)
-			cout << arrOfMili[i][j].transition << '/' << arrOfMili[i][j].outPutstate << ' ';
-		cout << endl;
-	}
-}
-
-void PrintArrEqv(vector<vector<int>> arrOfMili, int is, int js)
-{
-	for (size_t i = 0; i < is; i++)
-	{
-		for (size_t j = 0; j < js; j++)
-			cout << arrOfMili[i][j] << ' ';
-		cout << endl;
-	}
 }
 
 void PrintGraph(vector<vector<TransitionAndOutputState>> arrGraph, int countOfState, int countOfInputState, string fileName)
@@ -335,12 +292,10 @@ void PrintGraph(vector<vector<TransitionAndOutputState>> arrGraph, int countOfSt
 		for (size_t j = 0; j < countOfInputState; j++)
 			edges.push_back(pair<int, int>(i, arrGraph[j][i].transition));
 
-	vector<string> weights(edges.size());
+	vector<string> weights;
 	for (size_t i = 0; i < countOfState; i++)
 		for (size_t j = 0; j < countOfInputState; j++)
-			weights.push_back(to_string(j) + '/' +  to_string(arrGraph[j][i].outPutstate));
-
-	//fill(weights.begin(), weights.end(), 1.0);
+			weights.push_back(to_string(j+1) + '/' +  to_string(arrGraph[j][i].outPutstate));
 
 	Graph graph(edges.begin(), edges.end(), weights.begin(), VERTEX_COUNT);
 	dynamic_properties dp;
@@ -350,4 +305,14 @@ void PrintGraph(vector<vector<TransitionAndOutputState>> arrGraph, int countOfSt
 	dp.property("node_id", get(vertex_index, graph));
 	ofstream ofs(fileName);
 	write_graphviz_dp(ofs, graph, dp);
+}
+
+void PrintArr(vector<vector<TransitionAndOutputState>> arrGraph, int countIn, int countAll, ofstream & outFile)
+{
+	for (size_t i = 0; i < countIn; i++)
+	{
+		for (size_t j = 0; j < countAll; j++)
+			outFile << arrGraph[i][j].transition << '/' << arrGraph[i][j].outPutstate << ' ';
+		outFile << endl;
+	}
 }
