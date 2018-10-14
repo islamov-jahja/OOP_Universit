@@ -16,7 +16,7 @@ void PrintArr(vector<vector<TransitionAndOutputState>> arrOfMili, int is, int js
 vector<vector<int>> GetArrFromFirstIt(vector<vector<TransitionAndOutputState>> arrOfMili, size_t countOfInputState, size_t countOfState);
 void PrintArrEqv(vector<vector<int>>  arrOfMili, int is, int js);
 void ReadMur(vector<vector<int>> & arrofMur, ifstream & inFile, size_t countOfInputState, size_t countOfState);
-void PrintGraph(vector<vector<TransitionAndOutputState>> arrOfMili, int countOfState, int countOfInputState);
+void PrintGraph(vector<vector<TransitionAndOutputState>> arrOfMili, int countOfState, int countOfInputState, string fileName);
 vector<vector<int>> GetSplittingGraph(vector<vector<int>> arrFromFirstIt, vector<vector<TransitionAndOutputState>> startArr, int coutInputState, int countOfState);
 vector<vector<int>> GetSplit(vector<vector<int>> arrFromFirstIt, int countOfInputState, int countOfState);
 vector<vector<int>> GetFilledArray(vector<vector<int>> arrFromFirstIt, vector<vector<TransitionAndOutputState>> startArr, int countInputState, int countOfState);
@@ -80,7 +80,7 @@ vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMili(ifstream & inFi
 	vector<vector<TransitionAndOutputState>> arrOfMili(countOfInputState, vector<TransitionAndOutputState>(countOfState));
 
 	ReadMili(arrOfMili, inFile, countOfInputState, countOfState);
-	//PrintGraph(arrOfMili, countOfState, countOfInputState);
+	PrintGraph(arrOfMili, countOfState, countOfInputState, "inMili.dot");
 	vector<vector<int>> arrWithEquvivalents(countOfInputState + 2, vector<int>(countOfState));
 	arrWithEquvivalents = GetArrFromFirstIt(arrOfMili, countOfInputState, countOfState);
 	arrWithEquvivalents = GetSplittingGraph(arrWithEquvivalents, arrOfMili, countOfInputState, countOfState);
@@ -93,14 +93,15 @@ vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMili(ifstream & inFi
 	counter++;
 
 	vector<vector<TransitionAndOutputState>> arrOfMiliForOut = GetGraphInAnotherForm(arrWithEquvivalents, arrOfMili, countOfInputState, countOfState, counter);
-	PrintArr(arrOfMiliForOut, countOfInputState, counter);
-	return vector<vector<TransitionAndOutputState>>(arrOfMiliForOut);
+	PrintGraph(arrOfMiliForOut, counter, countOfInputState, "outMili.dot");
+	return arrOfMiliForOut;
 }
 
 vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMur(ifstream & inFile, size_t countOfInputState, size_t countOfOuputState, size_t countOfState)
 {
 	vector<vector<TransitionAndOutputState>> arrOfMur(countOfInputState, vector<TransitionAndOutputState>(countOfState));
 	ReadMur(arrOfMur, inFile, countOfInputState, countOfState);
+	PrintGraph(arrOfMur, countOfState, countOfInputState, "inMur.dot");
 	vector<vector<int>> arrWithEquvivalents(countOfInputState + 2, vector<int>(countOfState));
 	arrWithEquvivalents = GetArrFromFirstIt(arrOfMur, countOfInputState, countOfState);
 	arrWithEquvivalents = GetSplittingGraph(arrWithEquvivalents, arrOfMur, countOfInputState, countOfState);
@@ -113,7 +114,8 @@ vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMur(ifstream & inFil
 	counter++;
 
 	vector<vector<TransitionAndOutputState>> arrOfMurForOut = GetGraphInAnotherForm(arrWithEquvivalents, arrOfMur, countOfInputState, countOfState, counter);;
-	return vector<vector<TransitionAndOutputState>>(arrOfMurForOut);
+	PrintGraph(arrOfMurForOut, counter, countOfInputState, "outMur.dot");
+	return arrOfMurForOut;
 }
 
 vector<vector<TransitionAndOutputState>> GetGraphInAnotherForm(vector<vector<int>> arrWithEquvivalents, vector<vector<TransitionAndOutputState>> arrOfGraph, int countOfInputState, int countOfState, int counter)
@@ -322,10 +324,10 @@ void PrintArrEqv(vector<vector<int>> arrOfMili, int is, int js)
 	}
 }
 
-void PrintGraph(vector<vector<TransitionAndOutputState>> arrGraph, int countOfState, int countOfInputState)
+void PrintGraph(vector<vector<TransitionAndOutputState>> arrGraph, int countOfState, int countOfInputState, string fileName)
 {
 	using Edge = pair<int, int>;
-	using Graph = boost::adjacency_list<vecS, vecS, directedS, property<vertex_color_t, default_color_type>, property<edge_weight_t, double>>;
+	using Graph = boost::adjacency_list<vecS, vecS, directedS, property<vertex_color_t, default_color_type>, property<edge_weight_t, string>>;
 	const int VERTEX_COUNT = countOfState;
 
 	vector<Edge> edges;
@@ -333,12 +335,12 @@ void PrintGraph(vector<vector<TransitionAndOutputState>> arrGraph, int countOfSt
 		for (size_t j = 0; j < countOfInputState; j++)
 			edges.push_back(pair<int, int>(i, arrGraph[j][i].transition));
 
-	vector<double> weights(edges.size());
-	/*for (size_t i = 0; i < countOfState; i++)
+	vector<string> weights(edges.size());
+	for (size_t i = 0; i < countOfState; i++)
 		for (size_t j = 0; j < countOfInputState; j++)
-			weights.push_back(to_string(j) + '/' +  to_string(arrGraph[j][i].outPutstate));*/
+			weights.push_back(to_string(j) + '/' +  to_string(arrGraph[j][i].outPutstate));
 
-	fill(weights.begin(), weights.end(), 1.0);
+	//fill(weights.begin(), weights.end(), 1.0);
 
 	Graph graph(edges.begin(), edges.end(), weights.begin(), VERTEX_COUNT);
 	dynamic_properties dp;
@@ -346,6 +348,6 @@ void PrintGraph(vector<vector<TransitionAndOutputState>> arrGraph, int countOfSt
 	dp.property("weight" , get(edge_weight, graph));
 	dp.property("label" , get(edge_weight, graph));
 	dp.property("node_id", get(vertex_index, graph));
-	ofstream ofs("test.dot");
+	ofstream ofs(fileName);
 	write_graphviz_dp(ofs, graph, dp);
 }
