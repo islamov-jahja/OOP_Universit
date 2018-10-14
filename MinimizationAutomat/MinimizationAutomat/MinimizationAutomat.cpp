@@ -20,7 +20,7 @@ void PrintGraph(vector<vector<TransitionAndOutputState>> arrOfMili, int countOfS
 vector<vector<int>> GetSplittingGraph(vector<vector<int>> arrFromFirstIt, vector<vector<TransitionAndOutputState>> startArr, int coutInputState, int countOfState);
 vector<vector<int>> GetSplit(vector<vector<int>> arrFromFirstIt, int countOfInputState, int countOfState);
 vector<vector<int>> GetFilledArray(vector<vector<int>> arrFromFirstIt, vector<vector<TransitionAndOutputState>> startArr, int countInputState, int countOfState);
-vector<vector<TransitionAndOutputState>> GetGraphInAnotherForm(vector<vector<int>> arrWithEquvivalents, vector<vector<TransitionAndOutputState>> arrOfMur, int countOfInputState, int countOfState);
+vector<vector<TransitionAndOutputState>> GetGraphInAnotherForm(vector<vector<int>> arrWithEquvivalents, vector<vector<TransitionAndOutputState>> arrOfMur, int countOfInputState, int countOfState, int counter);
 
 const int MUR = 1;
 const int MILI = 2;
@@ -85,7 +85,15 @@ vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMili(ifstream & inFi
 	arrWithEquvivalents = GetArrFromFirstIt(arrOfMili, countOfInputState, countOfState);
 	arrWithEquvivalents = GetSplittingGraph(arrWithEquvivalents, arrOfMili, countOfInputState, countOfState);
 
-	vector<vector<TransitionAndOutputState>> arrOfMiliForOut = GetGraphInAnotherForm(arrWithEquvivalents, arrOfMili, countOfInputState, countOfState);
+	int counter = 0;
+
+	for (size_t i = 0; i < countOfState; i++)
+		if (counter < arrWithEquvivalents[0][i])
+			counter = arrWithEquvivalents[0][i];
+	counter++;
+
+	vector<vector<TransitionAndOutputState>> arrOfMiliForOut = GetGraphInAnotherForm(arrWithEquvivalents, arrOfMili, countOfInputState, countOfState, counter);
+	PrintArr(arrOfMiliForOut, countOfInputState, counter);
 	return vector<vector<TransitionAndOutputState>>(arrOfMiliForOut);
 }
 
@@ -96,19 +104,20 @@ vector<vector<TransitionAndOutputState>> GetArrWithMinimizedMur(ifstream & inFil
 	vector<vector<int>> arrWithEquvivalents(countOfInputState + 2, vector<int>(countOfState));
 	arrWithEquvivalents = GetArrFromFirstIt(arrOfMur, countOfInputState, countOfState);
 	arrWithEquvivalents = GetSplittingGraph(arrWithEquvivalents, arrOfMur, countOfInputState, countOfState);
-	vector<vector<TransitionAndOutputState>> arrOfMurForOut = GetGraphInAnotherForm(arrWithEquvivalents, arrOfMur, countOfInputState, countOfState);;
-	return vector<vector<TransitionAndOutputState>>(arrOfMurForOut);
-}
 
-vector<vector<TransitionAndOutputState>> GetGraphInAnotherForm(vector<vector<int>> arrWithEquvivalents, vector<vector<TransitionAndOutputState>> arrOfGraph, int countOfInputState, int countOfState)
-{
 	int counter = 0;
 
 	for (size_t i = 0; i < countOfState; i++)
 		if (counter < arrWithEquvivalents[0][i])
 			counter = arrWithEquvivalents[0][i];
 	counter++;
-	
+
+	vector<vector<TransitionAndOutputState>> arrOfMurForOut = GetGraphInAnotherForm(arrWithEquvivalents, arrOfMur, countOfInputState, countOfState, counter);;
+	return vector<vector<TransitionAndOutputState>>(arrOfMurForOut);
+}
+
+vector<vector<TransitionAndOutputState>> GetGraphInAnotherForm(vector<vector<int>> arrWithEquvivalents, vector<vector<TransitionAndOutputState>> arrOfGraph, int countOfInputState, int countOfState, int counter)
+{	
 	vector<vector<TransitionAndOutputState>> arrForOut(countOfInputState, vector<TransitionAndOutputState>(counter));
 	counter = 0;
 
@@ -134,8 +143,8 @@ vector<vector<TransitionAndOutputState>> GetGraphInAnotherForm(vector<vector<int
 				}
 			}
 		}
-	//PrintArr(arrForOut, 2, 3);
-	return vector<vector<TransitionAndOutputState>>();
+
+	return arrForOut;
 }
 
 vector<vector<int>> GetArrFromFirstIt(vector<vector<TransitionAndOutputState>> arrOfMili, size_t countOfInputState, size_t countOfState)
