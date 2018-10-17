@@ -266,7 +266,6 @@ void PrintArr(vector<vector<TransitionAndOutputState>> arrGraph, int countIn, in
 {
 	outFile << formGraph << endl;
 	outFile << countIn << endl;
-	outFile << countAll << endl;
 	outFile << outCount << endl;
 	outFile << countAll << endl;
 	if (formGraph == MILI)

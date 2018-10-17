@@ -6,7 +6,7 @@
 
 int main()
 {
-	ifstream inFile("data1Mur.txt");
+	ifstream inFile("in12.txt");
 	ofstream outFile("output.txt");
 
 	size_t stateForm;
